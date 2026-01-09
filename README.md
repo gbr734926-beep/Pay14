@@ -352,6 +352,172 @@ a=a&b=b{apiKey}
 暂无数据
 ```
 
+
+## 提现接口
+**接口URL**
+
+> /api/open/order/payout
+
+**请求方式**
+
+> POST
+
+**Content-Type**
+
+> json
+
+**请求Body参数**
+
+```javascript
+{
+    "type": "phone", // phone/bank
+    "amount": "20", // 金额
+    // 以下为提现到手机号时必填 type=phone
+    "toPhone": "13800000000", // 手机号
+    "remark": "备注", // 备注
+    "merchantOrderNo": "A1763543467514" // 商户订单号
+    // 以下为提现到银行时必填 type=bank
+    "bankAccount": "6217001234567890123" // 银行账号
+    "ifscCode": "ICIC0001234" // 银行ifscCode
+}
+```
+
+**响应示例**
+
+* 成功(200)
+
+```javascript
+{
+  "code": 1,
+  "message": "success",
+  "data": {
+    "orderNo": "ORD202511191350221162983", // 订单号
+    "merchantOrderNo": "A1763543467514", // 商户订单号
+    "amount": "20", // 金额
+    "status": "paid", // 状态 paid提现成功 failed 提现失败
+    "fee": "1", // 手续费
+  }
+}
+```
+
+* 失败(404)
+
+```javascript
+暂无数据
+```
+
+## 提现订单列表
+
+**接口URL**
+
+> /api/open/order/payoutOrderList
+
+**请求方式**
+
+> POST
+
+**Content-Type**
+
+> json
+
+**请求Body参数**
+
+```javascript
+{
+    "page": "1",
+    "pageSize": "20",
+    "orderNo":"",
+    "merchantOrderNo":""
+}
+```
+
+**响应示例**
+
+* 成功(200)
+
+```javascript
+{
+  "code": 1,
+  "message": "success",
+  "data": {
+    "pageNum": 1,
+    "pageSize": 10,
+    "total": 1,
+    "pages": 1,
+    "data": [
+      {
+        "_id": "691d89adad5612457d5ecf02",
+        "version": 1,
+        "createTime": "2025-11-19T09:11:09.000Z",
+        "updateTime": "2025-11-19T09:17:10.000Z",
+        "userID": "test001",
+        "merchantOrderNo": "A1763543467514",
+        "orderNo": "ORD202511191350221162983",
+        "type": "withdrawal",
+        "orderAmount": 1000,
+        "paidAmount": 0,
+        "paymentTime": "1969-12-31T17:00:00.000Z",
+        "remark": "This is a test remark",
+        "status": "timeout",
+        "fee": 0,
+        "reviewTime": "1969-12-31T17:00:00.000Z",
+        "timeoutTime": "2025-11-19T09:16:09.000Z",
+        "cancelTime": "2025-11-19T09:17:10.000Z",
+        "failedTime": "1969-12-31T17:00:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+* 失败(404)
+
+```javascript
+暂无数据
+```
+
+## 余额查询
+**接口URL**
+
+> /api/open/order/queryBalance
+
+**请求方式**
+
+> POST
+
+**Content-Type**
+
+> json
+
+**请求Body参数**
+
+```javascript
+{
+}
+```
+
+**响应示例**
+
+* 成功(200)
+
+```javascript
+{
+  "code": 1,
+  "message": "success",
+  "data": {
+    "balance": "189", // 余额
+    "oncePayoutAmountMax": "20", // 单次支持最大提现金额
+    "oncePayoutAmountMin": "10" // 金额
+  }
+}
+```
+
+* 失败(404)
+
+```javascript
+暂无数据
+```
+
 # 支付成功通知
 
 + 请求⽅式：POST
