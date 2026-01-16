@@ -374,6 +374,7 @@ a=a&b=b{apiKey}
     "amount": "20", // 金额
     // 以下为提现到手机号时必填 type=phone
     "toPhone": "13800000000", // 手机号
+    "vpa": "13800000000@ptyes", // vpa 可选
     "remark": "备注", // 备注
     "merchantOrderNo": "A1763543467514" // 商户订单号
     // 以下为提现到银行时必填 type=bank
