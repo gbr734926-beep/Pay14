@@ -209,7 +209,7 @@ a=a&b=b{apiKey}
     "amount": "1000", // 金额
     "status": "pending_payment", // 状态
     "timeoutMillis": 1763543769442, // 过期时间
-    "payUrl": "upi://pay?pa=amazonpaygiftcardload@apl&pn=Amazon%20Pay%20Gift%20Card&mc=6540&tid=APL019a9b61c981f6b0e20b3be999943780&tr=i93r3fT6YeDHYdb4xbgRJ1WbGrVKCy2t9IS&cu=INR&tn=You%20are%20paying%20for%20an%20Amazon%20order&am=1000.00" // 支付链接
+    "payUrl": "upi://pay?pa=amazonpaygiftcardload@apl&pn=Amazon%20Pay%20Gift%20Card&mc=6540&tid=APL019a9b61c981f6b0e20b3be999943780&tr=i93r3fT6YeDHYdb4xbgRJ1WbGrVKCy2t9IS&cu=INR&tn=You%20are%20paying%20for%20an%20Amazon%20order&am=1000.00", // 支付链接
     "phonepePayUrl": "phonepe://native?data=xxxxxxxxxxxx&id=p2ppayment"
   }
 }
