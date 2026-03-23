@@ -378,6 +378,94 @@ a=a&b=b{apiKey}
 暂无数据
 ```
 
+## 卡密列表带商户订单号
+
+**接口URL**
+
+> /api/open/order/cardNoListWithMerchantOrderNo
+
+**请求方式**
+
+> POST
+
+**Content-Type**
+
+> json
+
+**请求Body参数**
+
+```javascript
+{
+    "page": "1",
+    "pageSize": "20",
+    "orderNo":"ORD202603091852260454979",
+    "startTime": 1,
+    "endTime": 1773053568694,
+    "status": "wait_use", // wait_pay,wait_use,used,expired
+    "cardType": "amazon",
+    "cardNo": "",
+    "amount": 10,
+    "orderCreateStart": 1,
+    "orderCreateEnd": 1773053569500,
+    "preId": "",
+}
+```
+
+**响应示例**
+
+* 成功(200)
+
+```javascript
+{
+    "code": 1,
+    "message": "success",
+    "data": {
+        "pageNum": 44,
+        "pageSize": 100,
+        "total": 4361,
+        "pages": 44,
+        "data": [
+            {
+                "_id": "69b1167b9c0bca46392bf045",
+                "version": 1,
+                "userID": "admin",
+                "orderNo": "ORD202603111514501095519",
+                "cardNo": "",
+                "payUrl": "",
+                "status": "expired",
+                "statusDesc": "已过期",
+                "cardType": "flipkart",
+                "amount": 3000,
+                "email": "gs4ozerh9x@bipaymail.com",
+                "emailHost": "10.126.0.14",
+                "emailPort": "993",
+                "expireTime": "2026-03-11T07:30:07.964Z",
+                "createTime": "2026-03-11T07:15:07.964Z",
+                "amazonAccountPhone": "15834846580",
+                "respStr": "",
+                "purchaseId": "OD3370068614933210",
+                "amazonAccountId": "69b0224b9c0bca463928ce70",
+                "accountCanUse": true,
+                "useAmazonVersion": "1",
+                "adminExportCount": 0,
+                "customerExportCount": 0,
+                "channelName": "flipkart",
+                "orderToken": "PN2603111245068ebd86c81f2dae96e972fbf2c85c71a88f7f9048f4f26e0e91c0e3ae5a0955d6731dd4f274dd13dd059807fb08d37a146aeb3c3fd7583c8de16df5842b5b0ae11_v3_1",
+                "resendEmailCount": 0,
+                "tag": "May you always find strength in your heart to keep moving forward! Pamela Cook",
+                "merchantOrderNo": "202603111514501095519"
+            }
+        ]
+    }
+}
+```
+
+* 失败(404)
+
+```javascript
+暂无数据
+```
+
 ## 资金流水列表
 **接口URL**
 
