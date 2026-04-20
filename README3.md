@@ -169,471 +169,611 @@ public class SignGenerator {
 a=a&b=b{apiKey}
 ```
 
+---
 
-## 浏览器列表
+## 一、浏览器管理
 
-**接口URL**
+### 1.1 创建浏览器
 
-> /api/open/browser/list
+- **端点**：`POST /api/open/browser/create`
+- **说明**：创建一个浏览器实例并分配给当前用户
 
-**请求方式**
+**请求体**（可选）：
 
-> POST
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `type` | String | 浏览器类型，如 `yuntu` / `browserless` |
+| `proxyUrl` | String | 代理地址，如 `socks5://user:pass@host:port` |
+| `env` | List\<String\> | 环境变量列表，支持：`SYSTEM`（Windows/Mac/Linux/Android/iOS）、`WINDOW_SIZE`、`EXTENSION`、`DISABLE_WEBRTC`（True/False）、`COOKIES` |
+| `desc` | String | 浏览器实例描述 |
 
-**Content-Type**
+**返回 `data`**：`BrowserInstance` 对象
 
-> json
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `_id` | String | 浏览器实例 ID |
+| `serverId` | String | 所属服务器 ID |
+| `serverName` | String | 服务器名称 |
+| `dockerId` | String | Docker 容器 ID |
+| `deviceId` | String | 设备 ID |
+| `ipAddress` | String | 局域网 IP |
+| `port` | String | CDP 端口 |
+| `name` | String | 容器名称 |
+| `useUserID` | String | 使用者用户 ID |
+| `type` | String | 类型：`yuntu` / `browserless` |
+| `image` | String | 镜像名称 |
+| `status` | String | 状态：`idle` / `used` / `stop` |
+| `status2` | String | 是否在线 |
+| `jumpServerId` | String | 跳板服务器 ID |
+| `vncPort` | String | VNC 端口 |
+| `proxyUrl` | String | 代理地址 |
+| `createTime` | String | 创建时间（ISO 8601） |
+| `updateTime` | String | 更新时间 |
+| `usedTime` | String | 开始使用时间 |
+| `stopTime` | String | 停止时间 |
 
-**请求Body参数**
+---
 
-```javascript
-{
-    "pageSize": 20,
-    "page": 1
-}
+### 1.2 浏览器列表
+
+- **端点**：`POST /api/open/browser/list`
+- **说明**：查询当前用户的浏览器实例列表
+
+**请求体**（可选）：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `filters` | Object | 过滤条件（key-value，会追加 `useUserID` 限制） |
+| `sorter` | Object | 排序，如 `{"createTime": -1}` |
+| `pageSize` | Integer | 每页条数（默认 20） |
+| `page` | Integer | 页码（默认 1） |
+
+**返回 `data`**：分页结构，`data` 数组为 `BrowserInstance` 对象列表（字段同 1.1）
+
+---
+
+### 1.3 释放浏览器
+
+- **端点**：`POST /api/open/browser/release/{id}`
+- **说明**：释放指定浏览器实例，恢复为 `idle` 状态
+
+**路径参数**：
+
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| `id` | String | 浏览器实例 ID |
+
+**请求体**：无
+
+**返回 `data`**：`null`
+
+---
+
+### 1.4 暂停浏览器
+
+- **端点**：`POST /api/open/browser/pause/{id}`
+- **说明**：暂停指定浏览器实例
+
+**路径参数**：
+
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| `id` | String | 浏览器实例 ID |
+
+**请求体**：无
+
+**返回 `data`**：`null`
+
+---
+
+### 1.5 恢复浏览器
+
+- **端点**：`POST /api/open/browser/resume/{id}`
+- **说明**：恢复已暂停的浏览器实例
+
+**路径参数**：
+
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| `id` | String | 浏览器实例 ID |
+
+**请求体**：无
+
+**返回 `data`**：`null`
+
+---
+
+### 1.6 获取浏览器打开 URL
+
+- **端点**：`POST /api/open/getOpenBrowserUrl`
+- **说明**：获取指定浏览器的可远程打开 URL
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `userID` | String | 目标用户 ID |
+| `browserId` | String | 浏览器实例 ID |
+
+**返回 `data`**：`String`，浏览器远程打开 URL
+
+---
+
+## 二、代理管理
+
+### 2.1 创建代理
+
+- **端点**：`POST /api/open/proxy/create`
+- **说明**：创建一个代理实例
+
+**请求体**（可选）：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `browserId` | String | 关联的浏览器实例 ID |
+| `proxyUrl` | String | 代理地址，如 `socks5://user:pass@host:port` |
+| `imageType` | String | 镜像类型 |
+
+**返回 `data`**：`ProxyInstance` 对象
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `_id` | String | 代理实例 ID |
+| `serverId` | String | 所属服务器 ID |
+| `serverName` | String | 服务器名称 |
+| `dockerId` | String | Docker 容器 ID |
+| `port` | String | 代理端口 |
+| `name` | String | 容器名称 |
+| `useUserID` | String | 使用者用户 ID |
+| `type` | String | 类型，如 `gost` |
+| `image` | String | 镜像名称 |
+| `status` | String | 状态：`idle` / `used` / `stop` |
+| `browserId` | String | 关联浏览器实例 ID |
+| `browserName` | String | 关联浏览器名称 |
+| `proxyUrl` | String | 完整代理地址 |
+| `createTime` | String | 创建时间 |
+| `updateTime` | String | 更新时间 |
+| `stopTime` | String | 停止时间 |
+
+---
+
+### 2.2 代理列表
+
+- **端点**：`POST /api/open/proxy/list`
+- **说明**：查询当前用户的代理实例列表
+
+**请求体**（可选）：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `filters` | Object | 过滤条件（会追加 `useUserID` 限制） |
+| `sorter` | Object | 排序 |
+| `pageSize` | Integer | 每页条数（默认 20） |
+| `page` | Integer | 页码（默认 1） |
+
+**返回 `data`**：分页结构，`data` 数组为 `ProxyInstance` 对象列表（字段同 2.1）
+
+---
+
+### 2.3 释放代理
+
+- **端点**：`POST /api/open/proxy/release/{id}`
+- **说明**：释放指定代理实例
+
+**路径参数**：
+
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| `id` | String | 代理实例 ID |
+
+**请求体**：无
+
+**返回 `data`**：`null`
+
+---
+
+## 三、用户管理
+
+### 3.1 创建子用户
+
+- **端点**：`POST /api/open/createUser`
+- **说明**：在当前用户下创建一个子用户
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `userID` | String | 子用户 ID |
+
+**返回 `data`**：`null`
+
+---
+
+### 3.2 登出用户
+
+- **端点**：`POST /api/open/logout`
+- **说明**：登出指定用户并释放其浏览器资源
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `userID` | String | 要登出的用户 ID |
+
+**返回 `data`**：`null`
+
+---
+
+## 四、数据仓库
+
+### 4.1 查询数据仓库列表
+
+- **端点**：`POST /api/open/dataRepo/list`
+- **说明**：查询当前用户的数据仓库列表（admin 可查全部）
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `filters` | Object | 过滤条件 |
+| `sorter` | Object | 排序 |
+| `pageSize` | Integer | 每页条数 |
+| `page` | Integer | 页码 |
+
+**返回 `data`**：分页结构，`data` 数组为 `DataRepo` 对象
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `_id` | String | 仓库 ID |
+| `userID` | String | 所属用户 ID |
+| `name` | String | 仓库名称 |
+| `dataSize` | Long | 数据总大小（字节） |
+| `textNum` | Long | 文本条数 |
+| `fileNum` | Long | 文件条数 |
+| `imageNum` | Long | 图片条数 |
+| `tableNum` | Long | 表格条数 |
+| `createTime` | String | 创建时间 |
+| `updateTime` | String | 更新时间 |
+
+---
+
+### 4.2 查询仓库数据列表（text / file / image）
+
+- **端点**：`POST /api/open/dataRepo/{id}/{type}`
+- **说明**：查询指定仓库中指定类型的数据列表
+
+**路径参数**：
+
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| `id` | String | 数据仓库 ID |
+| `type` | String | 数据类型：`text` / `file` / `image` / `table` |
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `filters` | Object | 追加过滤条件 |
+| `pageSize` | Integer | 每页条数 |
+| `page` | Integer | 页码 |
+
+**返回 `data`**：分页结构，`data` 数组为 `SubTaskData` 对象
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `_id` | String | 数据 ID |
+| `userID` | String | 所属用户 ID |
+| `taskId` | String | 来源任务 ID |
+| `taskExecuteNo` | String | 任务执行编号 |
+| `repoId` | String | 所属仓库 ID |
+| `repoName` | String | 仓库名称 |
+| `name` | String | 数据名称 |
+| `dataType` | String | 数据类型：`text`/`file`/`image`/`table` |
+| `textContent` | String | 文本内容（type=text 时有值） |
+| `filePath` | String | 文件路径（type=file 时有值） |
+| `imgPath` | String | 图片路径（type=image 时有值） |
+| `rowsHead` | String | 表头（CSV 格式，type=table 时有值） |
+| `dataSize` | Long | 数据大小（字节） |
+| `tableRowsNum` | Long | 表格行数（type=table 时有值） |
+| `createTime` | String | 创建时间 |
+
+---
+
+### 4.3 查询表格明细数据
+
+- **端点**：`POST /api/open/dataRepo/table/{id}`
+- **说明**：查询指定 `SubTaskData`（type=table）的行级明细数据
+
+**路径参数**：
+
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| `id` | String | SubTaskData 的 `_id` |
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `filters` | Object | 追加过滤条件 |
+| `pageSize` | Integer | 每页条数 |
+| `page` | Integer | 页码 |
+
+**返回 `data`**：分页结构，`data` 数组为 `SubTaskDataTable` 对象
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | String | 行数据 ID |
+| `userID` | String | 所属用户 ID |
+| `taskId` | String | 来源任务 ID |
+| `taskExecuteNo` | String | 任务执行编号 |
+| `dataId` | String | 关联的 SubTaskData ID |
+| `rows` | String | 行数据内容（JSON 或 CSV） |
+| `dataSize` | Long | 数据大小（字节） |
+| `createTime` | String | 创建时间 |
+
+---
+
+### 4.4 新增数据到仓库
+
+- **端点**：`POST /api/open/dataRepo/save`
+- **说明**：向指定数据仓库写入一条数据
+
+**请求体**：
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `repoName` | String | 是 | 目标仓库名称 |
+| `dataType` | String | 是 | 数据类型：`text` / `file` / `image` / `table` |
+| `name` | String | 否 | 数据名称 |
+| `taskId` | String | 否 | 关联任务 ID |
+| `content` | String | type=text | 文本内容 |
+| `base64` | String | type=file/image | 文件/图片 Base64 编码内容 |
+| `filepath` | String | type=file/image | 文件路径（与 base64 二选一） |
+| `rowsHead` | String | type=table | 表头（逗号分隔，如 `列1,列2,列3`） |
+| `rows` | List\<String\> | type=table | 每行数据（逗号分隔，与 rowsHead 列数对应） |
+
+**返回 `data`**：`null`
+
+---
+
+## 五、任务管理
+
+### 5.1 新增/更新任务
+
+- **端点**：`POST /api/open/subTask/save`
+- **说明**：创建或更新一个任务（有 `_id` 则更新）
+
+**请求体**（`SubTask` 对象）：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `_id` | String | 任务 ID（更新时传入） |
+| `name` | String | 任务名称 |
+| `dockerId` | String | 任务镜像 |
+| `type` | String | 任务类型 |
+| `browserIds` | List\<String\> | 指定浏览器 ID 列表 |
+| `browserType` | String | 浏览器类型（非指定时使用） |
+| `taskDockerId` | String | 任务镜像 ID |
+| `status` | String | 状态：`待执行`/`执行中`/`执行完成` |
+| `executeType` | String | 执行方式：`执行1次`/`循环执行` |
+| `executeTime` | String | 执行时间（ISO 8601） |
+| `loopExecuteTime` | String | 循环执行规则（Cron 表达式） |
+| `params` | Object | 执行参数（任意 key-value） |
+| `timeout` | Long | 超时时间（秒） |
+| `relationDataRepoId` | List\<String\> | 关联的数据仓库 ID 列表 |
+
+**返回 `data`**：`SubTaskSaveVO`
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `_id` | String | 保存后的任务 ID |
+
+---
+
+### 5.2 暂停任务
+
+- **端点**：`POST /api/open/subTask/pause`
+- **说明**：将状态为 `待执行` 的任务批量暂停（改为 `暂停`）
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `ids` | List\<String\> | 任务 ID 列表 |
+
+**返回 `data`**：`null`
+
+---
+
+### 5.3 重启任务
+
+- **端点**：`POST /api/open/subTask/restart`
+- **说明**：将状态为 `暂停` 的任务批量恢复为 `待执行`
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `ids` | List\<String\> | 任务 ID 列表 |
+
+**返回 `data`**：`null`
+
+---
+
+### 5.4 结束任务
+
+- **端点**：`POST /api/open/subTask/finish`
+- **说明**：批量强制结束任务
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `ids` | List\<String\> | 任务 ID 列表 |
+
+**返回 `data`**：`null`
+
+---
+
+### 5.5 查询任务列表
+
+- **端点**：`POST /api/open/subTask/list`
+- **说明**：查询任务列表（admin 可查全部，普通用户只查自己的）
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `filters` | Object | 过滤条件，支持按 `name`/`status`/`executeType` 等字段过滤 |
+| `sorter` | Object | 排序 |
+| `pageSize` | Integer | 每页条数 |
+| `page` | Integer | 页码 |
+
+**返回 `data`**：分页结构，`data` 数组为 `SubTask` 对象（字段同 5.1 请求体，另含以下只读字段）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `hasExecuteNum` | Long | 已执行次数 |
+| `finishTime` | String | 任务结束时间 |
+| `containerId` | String | 运行容器 ID |
+| `deviceId` | String | 设备 ID |
+| `createTime` | String | 创建时间 |
+
+---
+
+## 六、任务日志
+
+### 6.1 查询日志列表
+
+- **端点**：`POST /api/open/subTaskLog/list`
+- **说明**：查询任务日志列表（admin 可查全部）
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `filters` | Object | 过滤条件，支持 `taskId`/`taskExecuteNo`/`logLevel`/`logTag` |
+| `sorter` | Object | 排序 |
+| `pageSize` | Integer | 每页条数 |
+| `page` | Integer | 页码 |
+
+**返回 `data`**：分页结构，`data` 数组为 `SubTaskLog` 对象
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `_id` | String | 日志 ID |
+| `userID` | String | 所属用户 ID |
+| `taskId` | String | 任务 ID |
+| `taskExecuteNo` | String | 任务执行编号 |
+| `logLevel` | String | 日志级别：`DEBUG`/`INFO`/`WARN`/`ERROR` |
+| `logContent` | String | 日志内容 |
+| `logTag` | String | 日志标签（如 `browser_init`/`data_processing`） |
+| `createTime` | String | 创建时间 |
+
+---
+
+### 6.2 新增日志
+
+- **端点**：`POST /api/open/subTaskLog/save`
+- **说明**：为指定任务写入一条日志（任务必须归属当前用户）
+
+**请求体**：
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `taskId` | String | 是 | 关联任务 ID |
+| `taskExecuteNo` | String | 否 | 任务执行编号 |
+| `logLevel` | String | 否 | 日志级别：`DEBUG`/`INFO`/`WARN`/`ERROR` |
+| `logTag` | String | 否 | 日志标签 |
+| `logContent` | String | 否 | 日志内容 |
+
+**返回 `data`**：`null`
+
+---
+
+## 七、镜像管理
+
+### 7.1 保存镜像（新增/更新）
+
+- **端点**：`POST /api/open/dockerImage/save`
+- **说明**：创建或更新一个 Docker 镜像配置（有 `_id` 则更新）。新建时会对 `imageType` 做唯一性校验（`taskjs`/`taskpython` 类型除外，每种类型每个用户只能绑定一个镜像）。更新时 `imageType` 不可通过此接口修改。系统会根据 `registryURL`/`repositoryName`/`tag` 自动生成 `imgId`。
+
+**请求体**（`DockerImage` 对象）：
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `_id` | String | 否 | 镜像 ID（更新时传入） |
+| `name` | String | 否 | 镜像名称 |
+| `registryURL` | String | 否 | 镜像仓库地址，如 `registry.example.com` |
+| `repositoryName` | String | 否 | 仓库名称，如 `myapp/browser` |
+| `tag` | String | 否 | 镜像标签（默认 `latest`） |
+| `imageType` | String | 否 | 镜像类型：`yuntu`/`browserless`/`gost`/`taskjs`/`taskpython`（仅新建时有效） |
+| `description` | String | 否 | 镜像描述 |
+
+**返回 `data`**：`DockerImageSaveVO`
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `_id` | String | 保存后的镜像 ID |
+
+---
+
+### 7.2 查询单个镜像
+
+- **端点**：`GET /api/open/dockerImage/{_id}`
+- **说明**：根据 ID 查询镜像详情
+
+**路径参数**：
+
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| `_id` | String | 镜像 ID |
+
+**返回 `data`**：`DockerImage` 对象
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `_id` | String | 镜像 ID |
+| `imgId` | String | 镜像唯一标识（自动生成，格式 `registryURL/repositoryName:tag`） |
+| `name` | String | 镜像名称 |
+| `registryURL` | String | 镜像仓库地址 |
+| `repositoryName` | String | 仓库名称 |
+| `tag` | String | 镜像标签 |
+| `imageType` | String | 镜像类型 |
+| `description` | String | 镜像描述 |
+| `userID` | String | 所属用户 ID |
+| `createdTime` | String | 创建时间（ISO 8601） |
+| `updatedTime` | String | 更新时间 |
+
+---
+
+### 7.3 镜像列表
+
+- **端点**：`POST /api/open/dockerImage/list`
+- **说明**：查询镜像列表（admin 可查全部，普通用户只查自己的）
+
+**请求体**：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `filters` | Object | 过滤条件，支持 `name`/`imageType`/`registryURL` 等字段 |
+| `sorter` | Object | 排序 |
+| `pageSize` | Integer | 每页条数（默认 20） |
+| `page` | Integer | 页码（默认 1） |
+
+**返回 `data`**：分页结构，`data` 数组为 `DockerImage` 对象（字段同 7.2）
+
+---
+
+### 7.4 删除镜像
+
+- **端点**：`POST /api/open/dockerImage/delete`
+- **说明**：批量删除镜像
+
+**请求体**：`List<String>`，镜像 ID 列表
+
+```json
+["id1", "id2", "id3"]
 ```
 
-
-**响应示例**
-
-* 成功(200)
-
-```javascript
-{
-	"code": 1,
-	"message": "success",
-	"data": {
-		"pageNum": 1,
-		"pageSize": 20,
-		"total": 1,
-		"pages": 1,
-		"data": [
-			{
-				"_id": "69b26cd5d69183445512430d",
-				"userID": "admin",
-				"serverId": "69b22c516f0cf46cb5b6df2b",
-				"serverName": "ubuntu205",
-				"dockerId": "e624580d3066",
-				"deviceId": "node-docker-cli-ubuntu205-192.168.10.205",
-				"ipAddress": "192.168.10.205",
-				"port": "13946",
-				"name": "node-docker-cli-ubuntu205-192.168.10.205brms1-browser-yuntu-13946",
-				"useUserID": "zhangsan",
-				"type": "yuntu",
-				"image": "registry.tnt-pub.com/nyy/nyy/reddit-sandbox:latest",
-				"status": "used",
-				"status2": "online",
-				"jumpServerId": "14a93f24-4d1a-4592-a9c0-89f1606d75f7",
-				"vncPort": "15762",
-				"createTime": "2026-03-12T07:35:49.351Z",
-				"updateTime": "2026-03-12T07:35:51.258Z",
-				"usedTime": "2026-03-12T07:45:38.128Z"
-			}
-		]
-	}
-}
-```
-
-* 失败(404)
-
-```javascript
-暂无数据
-```
-
-
-
-## 浏览器创建
-
-**接口URL**
-
-> /api/open/browser/create
-
-**请求方式**
-
-> POST
-
-**Content-Type**
-
-> json
-
-**请求Body参数**
-
-```javascript
-{
-    "type": "yuntu", // 浏览器类型 yuntu或browserless
-    "proxyUrl": "" // yuntu的代理
-}
-```
-
-
-**响应示例**
-
-* 成功(200)
-
-```javascript
-{
-	"code": 1,
-	"message": "success",
-	"data": {
-		"_id": "69b26cd5d69183445512430d",
-		"userID": "admin",
-		"serverId": "69b22c516f0cf46cb5b6df2b",
-		"serverName": "ubuntu205",
-		"dockerId": "e624580d3066",
-		"deviceId": "node-docker-cli-ubuntu205-192.168.10.205",
-		"ipAddress": "192.168.10.205",
-		"port": "13946",
-		"name": "node-docker-cli-ubuntu205-192.168.10.205brms1-browser-yuntu-13946",
-		"useUserID": "zhangsan",
-		"type": "yuntu",
-		"image": "registry.tnt-pub.com/nyy/nyy/reddit-sandbox:latest",
-		"status": "used",
-		"status2": "online",
-		"jumpServerId": "14a93f24-4d1a-4592-a9c0-89f1606d75f7",
-		"vncPort": "15762",
-		"createTime": "2026-03-12T07:35:49.351Z",
-		"updateTime": "2026-03-12T07:35:51.258Z",
-		"usedTime": "2026-03-12T07:45:38.128Z"
-	}
-}
-```
-
-* 失败(404)
-
-```javascript
-暂无数据
-```
-
-
-## 浏览器释放
-
-**接口URL**
-
-> /api/open/browser/release/:id
-
-**请求方式**
-
-> POST
-
-**Content-Type**
-
-> json
-
-**请求Body参数**
-
-```javascript
-{
-}
-```
-
-
-**响应示例**
-
-* 成功(200)
-
-```javascript
-{
-	"code": 1,
-	"message": "success"
-}
-```
-
-* 失败(404)
-
-```javascript
-暂无数据
-```
-
-
-## 浏览器代理列表
-
-**接口URL**
-
-> /api/open/proxy/list
-
-**请求方式**
-
-> POST
-
-**Content-Type**
-
-> json
-
-**请求Body参数**
-
-```javascript
-{
-    "pageSize": 20,
-    "page": 1
-}
-```
-
-
-**响应示例**
-
-* 成功(200)
-
-```javascript
-{
-	"code": 1,
-	"message": "success",
-	"data": {
-		"pageNum": 1,
-		"pageSize": 20,
-		"total": 1,
-		"pages": 1,
-		"data": [
-			{
-				"_id": "69b2734815db702b5390af81",
-				"userID": "zhangsan",
-				"serverId": "69b22c516f0cf46cb5b6df2b",
-				"serverName": "ubuntu205",
-				"dockerId": "cb243cf9e1e1",
-				"port": "23032",
-				"name": "node-docker-cli-ubuntu205-192.168.10.205brms1-browser-yuntu-14420_proxy",
-				"useUserID": "zhangsan",
-				"type": "gost",
-				"image": "ginuerzh/gost:latest",
-				"status": "used",
-				"browserId": "69b26cddd691834455124310",
-				"browserName": "node-docker-cli-ubuntu205-192.168.10.205brms1-browser-yuntu-14420",
-				"proxyUrl": "socks5://a:b@12.233.138.199:1240",
-				"createTime": "2026-03-12T08:03:20.397Z",
-				"updateTime": "2026-03-12T08:03:20.397Z"
-			}
-		]
-	}
-}
-```
-
-* 失败(404)
-
-```javascript
-暂无数据
-```
-
-
-
-## 浏览器代理创建
-
-**接口URL**
-
-> /api/open/proxy/create
-
-**请求方式**
-
-> POST
-
-**Content-Type**
-
-> json
-
-**请求Body参数**
-
-```javascript
-{
-    "browserId":"69b26cd5d69183445512430d",
-    "proxyUrl": "socks5://a:b@12.233.138.199:1240",
-    "imageType": "gost"
-}
-```
-
-
-**响应示例**
-
-* 成功(200)
-
-```javascript
-{
-	"code": 1,
-	"message": "success",
-	"data": {
-		"_id": "69b2734815db702b5390af81",
-		"userID": "zhangsan",
-		"serverId": "69b22c516f0cf46cb5b6df2b",
-		"serverName": "ubuntu205",
-		"dockerId": "cb243cf9e1e1",
-		"port": "23032",
-		"name": "node-docker-cli-ubuntu205-192.168.10.205brms1-browser-yuntu-14420_proxy",
-		"useUserID": "zhangsan",
-		"type": "gost",
-		"image": "ginuerzh/gost:latest",
-		"status": "used",
-		"browserId": "69b26cddd691834455124310",
-		"browserName": "node-docker-cli-ubuntu205-192.168.10.205brms1-browser-yuntu-14420",
-		"proxyUrl": "socks5://a:b@12.233.138.199:1240",
-		"createTime": "2026-03-12T08:03:20.397Z",
-		"updateTime": "2026-03-12T08:03:20.397Z"
-	}
-}
-```
-
-* 失败(404)
-
-```javascript
-暂无数据
-```
-
-
-## 浏览器代理释放
-
-**接口URL**
-
-> /api/open/proxy/release/:id
-
-**请求方式**
-
-> POST
-
-**Content-Type**
-
-> json
-
-**请求Body参数**
-
-```javascript
-{
-}
-```
-
-
-**响应示例**
-
-* 成功(200)
-
-```javascript
-{
-	"code": 1,
-	"message": "success"
-}
-```
-
-* 失败(404)
-
-```javascript
-暂无数据
-```
-
-
-
-## 创建子用户
-
-**接口URL**
-
-> /api/open/createUser
-
-**请求方式**
-
-> POST
-
-**Content-Type**
-
-> json
-
-**请求Body参数**
-
-```javascript
-{
-    "userID":"wangwu"
-}
-```
-
-
-**响应示例**
-
-* 成功(200)
-
-```javascript
-{
-	"code": 1,
-	"message": "success"
-}
-```
-
-* 失败(404)
-
-```javascript
-暂无数据
-```
-
-## 授权子用户打开浏览器
-
-**接口URL**
-
-> /api/open/getOpenBrowserUrl
-
-**请求方式**
-
-> POST
-
-**Content-Type**
-
-> json
-
-**请求Body参数**
-
-```javascript
-{
-    "userID":"wangwu",
-    "browserId": "69b3fd297f4c577903cc652d"
-}
-```
-
-
-**响应示例**
-
-* 成功(200)
-
-```javascript
-{
-	"code": 1,
-	"message": "success",
-	"data": "?ticketId=23254759-d00f-4b5b-9247-f88b2cc333aa&userID=wangwu" // 拼接 https://xx.com/jump?ticketId=23254759-d00f-4b5b-9247-f88b2cc333aa&userID=wangwu
-}
-```
-
-* 失败(404)
-
-```javascript
-暂无数据
-```
-
-## 登出子用户
-
-**接口URL**
-
-> /api/open/logout
-
-**请求方式**
-
-> POST
-
-**Content-Type**
-
-> json
-
-**请求Body参数**
-
-```javascript
-{
-    "userID":"wangwu"
-}
-```
-
-
-**响应示例**
-
-* 成功(200)
-
-```javascript
-{
-	"code": 1,
-	"message": "success"
-}
-```
-
-* 失败(404)
-
-```javascript
-暂无数据
-```
+**返回 `data`**：`null`
