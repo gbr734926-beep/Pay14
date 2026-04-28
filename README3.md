@@ -169,6 +169,7 @@ public class SignGenerator {
 a=a&b=b{apiKey}
 ```
 
+
 ---
 
 ## 一、浏览器管理
@@ -214,7 +215,25 @@ a=a&b=b{apiKey}
 
 ---
 
-### 1.2 浏览器列表
+### 1.2 更新浏览器
+
+- **端点**：`POST /api/open/browser/update`
+- **说明**：更新已有的浏览器实例配置
+
+**请求体**（可选）：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `type` | String | 浏览器类型，如 `yuntu` / `browserless` |
+| `proxyUrl` | String | 代理地址，如 `socks5://user:pass@host:port` |
+| `env` | List\<String\> | 环境变量列表 |
+| `desc` | String | 浏览器实例描述 |
+
+**返回 `data`**：`BrowserInstance` 对象（字段同 1.1）
+
+---
+
+### 1.3 浏览器列表
 
 - **端点**：`POST /api/open/browser/list`
 - **说明**：查询当前用户的浏览器实例列表
@@ -232,7 +251,7 @@ a=a&b=b{apiKey}
 
 ---
 
-### 1.3 释放浏览器
+### 1.4 释放浏览器
 
 - **端点**：`POST /api/open/browser/release/{id}`
 - **说明**：释放指定浏览器实例，恢复为 `idle` 状态
@@ -249,7 +268,7 @@ a=a&b=b{apiKey}
 
 ---
 
-### 1.4 暂停浏览器
+### 1.5 暂停浏览器
 
 - **端点**：`POST /api/open/browser/pause/{id}`
 - **说明**：暂停指定浏览器实例
@@ -266,7 +285,7 @@ a=a&b=b{apiKey}
 
 ---
 
-### 1.5 恢复浏览器
+### 1.6 恢复浏览器
 
 - **端点**：`POST /api/open/browser/resume/{id}`
 - **说明**：恢复已暂停的浏览器实例
@@ -283,7 +302,7 @@ a=a&b=b{apiKey}
 
 ---
 
-### 1.6 获取浏览器打开 URL
+### 1.7 获取浏览器打开 URL
 
 - **端点**：`POST /api/open/getOpenBrowserUrl`
 - **说明**：获取指定浏览器的可远程打开 URL
@@ -401,6 +420,27 @@ a=a&b=b{apiKey}
 | `userID` | String | 要登出的用户 ID |
 
 **返回 `data`**：`null`
+
+---
+
+### 3.3 创建 API Key
+
+- **端点**：`POST /api/open/createApiKey`
+- **说明**：为当前用户创建一个新的 API Key（含 Key 和 Secret）
+
+**请求体**：无
+
+**返回 `data`**：`ApiKey` 对象
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | Long | API Key 记录 ID |
+| `userID` | String | 所属用户 ID |
+| `apiKey` | String | API Key（24字节 Base64） |
+| `apiSecret` | String | API Secret（48字节 Base64） |
+| `whiteIp` | String | IP 白名单（逗号分隔） |
+| `status` | Integer | 状态：1=启用 |
+| `createdTime` | String | 创建时间 |
 
 ---
 
