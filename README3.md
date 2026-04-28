@@ -220,14 +220,15 @@ a=a&b=b{apiKey}
 - **端点**：`POST /api/open/browser/update`
 - **说明**：更新已有的浏览器实例配置
 
-**请求体**（可选）：
+**请求体**：
 
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `type` | String | 浏览器类型，如 `yuntu` / `browserless` |
-| `proxyUrl` | String | 代理地址，如 `socks5://user:pass@host:port` |
-| `env` | List\<String\> | 环境变量列表 |
-| `desc` | String | 浏览器实例描述 |
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `id` | String | 是 | 浏览器实例 ID |
+| `type` | String | 否 | 浏览器类型，如 `yuntu` / `browserless` |
+| `proxyUrl` | String | 否 | 代理地址，如 `socks5://user:pass@host:port` |
+| `env` | List\<String\> | 否 | 环境变量列表 |
+| `desc` | String | 否 | 浏览器实例描述 |
 
 **返回 `data`**：`BrowserInstance` 对象（字段同 1.1）
 
