@@ -319,6 +319,50 @@ a=a&b=b{apiKey}
 
 ---
 
+### 1.8 浏览器新增CDP代理
+
+- **端点**：`POST /api/open/browser/cdp/create`
+- **说明**：为指定浏览器实例创建 CDP 代理路由。网关根据浏览器所在服务器的网域（`server.gateway`）与网关名称（`apisixGateway.name`）自动匹配，无需手动指定。
+
+**请求体**：
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `id` | String | 是 | 浏览器实例 ID |
+
+**返回 `data`**：`BrowserInstance` 对象（含 `cdpProxyId` 和 `cdpUrl` 字段）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `cdpProxyId` | String | 创建的 CDP 代理记录 ID |
+| `cdpUrl` | String | CDP 代理访问地址，如 `http://gateway:9080/{instanceId}` |
+
+**错误情况**：
+- 浏览器实例不存在
+- 该实例已开启CDP代理
+- 未找到匹配的网关（服务器网域未配置或无对应网关）
+
+---
+
+### 1.9 浏览器删除CDP代理
+
+- **端点**：`POST /api/open/browser/cdp/delete`
+- **说明**：删除指定浏览器实例的 CDP 代理路由，同时从 APISIX 网关移除对应路由。
+
+**请求体**：
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `id` | String | 是 | 浏览器实例 ID |
+
+**返回 `data`**：`null`
+
+**错误情况**：
+- 浏览器实例不存在
+- 该实例未开启CDP代理
+
+---
+
 ## 二、代理管理
 
 ### 2.1 创建代理
