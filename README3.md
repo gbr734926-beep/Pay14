@@ -187,6 +187,7 @@ a=a&b=b{apiKey}
 | `proxyUrl` | String | 代理地址，如 `socks5://user:pass@host:port` |
 | `env` | List\<String\> | 环境变量列表，支持：`SYSTEM`（Windows/Mac/Linux/Android/iOS）、`WINDOW_SIZE`、`EXTENSION`、`DISABLE_WEBRTC`（True/False）、`COOKIES` |
 | `desc` | String | 浏览器实例描述 |
+| `enableCdp` | Boolean | 是否开启 CDP 代理。为 `true` 时，系统根据浏览器所在服务器的网域（`server.gateway`）自动匹配网关并创建 APISIX 路由 |
 
 **返回 `data`**：`BrowserInstance` 对象
 
