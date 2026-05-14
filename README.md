@@ -381,6 +381,7 @@ a=a&b=b{apiKey}
     // 以下为提现到银行时必填 type=bank
     "bankAccount": "6217001234567890123" // 银行账号
     "ifscCode": "ICIC0001234" // 银行ifscCode
+    "receiverName": "" // 收款人名称
 }
 ```
 
