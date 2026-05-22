@@ -184,8 +184,9 @@ a=a&b=b{apiKey}
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | `type` | String | 浏览器类型，如 `yuntu` / `browserless` |
-| `proxyUrl` | String | 代理地址，如 `socks5://user:pass@host:port` |
-| `env` | List\<String\> | 环境变量列表，支持：`SYSTEM`（Windows/Mac/Linux/Android/iOS）、`WINDOW_SIZE`、`EXTENSION`、`DISABLE_WEBRTC`（True/False）、`COOKIES` |
+| `proxyMode` | String | 代理模式：`system`（系统代理）/ `custom`（自定义代理） |
+| `proxyUrl` | String | 代理地址，如 `socks5://user:pass@host:port`（proxyMode=custom 时使用） |
+| `env` | List\<String\> | 环境变量列表，支持：`SYSTEM`（Windows/Mac/Linux/Android/iOS）、`WINDOW_SIZE`、`EXTENSION`、`DISABLE_WEBRTC`（True/False）、`COOKIES`、`TZ`（时区）、`COUNTRY_CODE`（国家代码） |
 | `desc` | String | 浏览器实例描述 |
 | `enableCdp` | Boolean | 是否开启 CDP 代理。为 `true` 时，系统根据浏览器所在服务器的网域（`server.gateway`）自动匹配网关并创建 APISIX 路由 |
 
@@ -209,6 +210,10 @@ a=a&b=b{apiKey}
 | `jumpServerId` | String | 跳板服务器 ID |
 | `vncPort` | String | VNC 端口 |
 | `proxyUrl` | String | 代理地址 |
+| `proxyMode` | String | 代理模式：`system`（系统代理）/ `custom`（自定义代理） |
+| `cdpProxyId` | String | CDP 代理记录 ID（开启 CDP 时返回） |
+| `cdpUrl` | String | CDP 代理访问地址，如 `http://gateway:9080/{instanceId}`（开启 CDP 时返回） |
+| `authorizedUserIDs` | List\<String\> | 被授权访问的用户 ID 列表 |
 | `createTime` | String | 创建时间（ISO 8601） |
 | `updateTime` | String | 更新时间 |
 | `usedTime` | String | 开始使用时间 |
@@ -361,6 +366,62 @@ a=a&b=b{apiKey}
 **错误情况**：
 - 浏览器实例不存在
 - 该实例未开启CDP代理
+
+---
+
+### 1.10 授权用户访问浏览器
+
+- **端点**：`POST /api/open/browser/authorize`
+- **说明**：将指定浏览器实例授权给目标用户，被授权用户可打开该浏览器页面
+
+**请求体**：
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `id` | String | 是 | 浏览器实例 ID |
+| `targetUserID` | String | 是 | 要授权的目标用户 ID |
+
+**返回 `data`**：`null`
+
+**错误情况**：
+- 浏览器实例不存在或无权操作
+
+---
+
+### 1.11 取消用户授权
+
+- **端点**：`POST /api/open/browser/revoke`
+- **说明**：取消指定用户对浏览器实例的访问授权
+
+**请求体**：
+
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `id` | String | 是 | 浏览器实例 ID |
+| `targetUserID` | String | 是 | 要取消授权的目标用户 ID |
+
+**返回 `data`**：`null`
+
+**错误情况**：
+- 浏览器实例不存在或无权操作
+
+---
+
+### 1.12 被授权浏览器列表
+
+- **端点**：`POST /api/open/browser/authorized/list`
+- **说明**：查询当前用户被授权访问的浏览器实例列表
+
+**请求体**（可选）：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `filters` | Object | 过滤条件 |
+| `sorter` | Object | 排序 |
+| `pageSize` | Integer | 每页条数（默认 10） |
+| `page` | Integer | 页码（默认 1） |
+
+**返回 `data`**：分页结构，`data` 数组为 `BrowserInstance` 对象列表（字段同 1.1）
 
 ---
 
