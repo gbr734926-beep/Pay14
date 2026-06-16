@@ -242,7 +242,9 @@ a=a&b=b{apiKey}
     "page": "1",
     "pageSize": "20",
     "orderNo":"",
-    "merchantOrderNo":""
+    "merchantOrderNo":"",
+    "startTime": 1781596102130,
+    "endTime": 1781596118556
 }
 ```
 
@@ -436,7 +438,9 @@ a=a&b=b{apiKey}
     "page": "1",
     "pageSize": "20",
     "orderNo":"",
-    "merchantOrderNo":""
+    "merchantOrderNo":"",
+    "startTime": 1781596102130,
+    "endTime": 1781596118556
 }
 ```
 
@@ -518,6 +522,65 @@ a=a&b=b{apiKey}
     "oncePayoutAmountMax": "20", // 单次支持最大提现金额
     "oncePayoutAmountMin": "10" // 金额
   }
+}
+```
+
+* 失败(404)
+
+```javascript
+暂无数据
+```
+
+## 加减积分操作记录查询
+**接口URL**
+
+> /api/open/order/pointOperateLogList
+
+**请求方式**
+
+> POST
+
+**Content-Type**
+
+> json
+
+**请求Body参数**
+
+```javascript
+{
+    "page": "1",
+    "pageSize": "20",
+    "startTime": 1781596102130,
+    "endTime": 1781596118556
+}
+```
+
+**响应示例**
+
+* 成功(200)
+
+```javascript
+{
+    "code": 1,
+    "message": "success",
+    "data": {
+        "pageNum": 1,
+        "pageSize": 20,
+        "total": 7,
+        "pages": 1,
+        "data": [
+            {
+                "_id": "6a30c12934745d32c269601e",
+                "version": 0,
+                "userID": "A79406723",
+                "amount": 10,
+                "operate": "plus", // plus 加  sub 减
+                "operatorUserID": "admin",
+                "remark": "ddd",
+                "createTime": "2026-06-16T03:21:13.803Z"
+            }
+        ]
+    }
 }
 ```
 
