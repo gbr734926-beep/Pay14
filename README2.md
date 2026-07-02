@@ -190,7 +190,8 @@ a=a&b=b{apiKey}
 {
     "merchantOrderNo": "175",
     "amount": "10",
-    "remark": "test is remark"
+    "remark": "test is remark",
+    "cardType": "amazon", // 可选
 }
 ```
 
